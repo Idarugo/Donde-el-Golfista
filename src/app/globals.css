@@ -1,0 +1,228 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   DONDE EL GOLFISTA — Design tokens
+   "Fresh produce meets luxury golf club."
+   Deep greens (club house) · fairway greens (campo) · cream (papel editorial)
+   · gold (detalle de trofeo) · clay (tierra)
+   ========================================================================== */
+
+@theme {
+  /* — Color — */
+  --color-forest: #08170f;
+  --color-pine: #0e2718;
+  --color-moss: #1a3d27;
+  --color-fairway: #2c6840;
+  --color-turf: #4f8f46;
+  --color-sprout: #86b46a;
+  --color-olive: #7a8450;
+
+  --color-bone: #fcfaf3;
+  --color-cream: #f4efe1;
+  --color-sand: #e3dac2;
+  --color-stone: #c7bfa8;
+
+  --color-gold: #c19d47;
+  --color-gold-light: #ddc078;
+  --color-clay: #96663c;
+
+  --color-ink: #08170f;
+  --color-ink-soft: #3f5145;
+  --color-ink-faint: #5d6e61;
+
+  /* — Typography — */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), ui-serif, Georgia, serif;
+
+  /* — Motion — */
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* — Layout — */
+  --spacing-gutter: 1.5rem;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --header-h: 4.5rem;
+  }
+
+  * {
+    min-width: 0;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--header-h);
+  }
+
+  body {
+    background-color: var(--color-bone);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.65;
+    /* Evita cualquier desbordamiento horizontal por parallax/translate */
+    overflow-x: clip;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background-color: var(--color-gold);
+    color: var(--color-forest);
+  }
+
+  /* Foco visible y consistente en toda la marca */
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* La imagen nunca rompe el layout */
+  img, video, svg {
+    max-width: 100%;
+  }
+}
+
+@layer utilities {
+  /* Contenedor editorial único para toda la web */
+  .shell {
+    width: 100%;
+    max-width: 90rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .shell { padding-inline: 2.5rem; }
+  }
+
+  @media (min-width: 1280px) {
+    .shell { padding-inline: 4rem; }
+  }
+
+  /* Etiqueta de sección (eyebrow) */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    line-height: 1.45;
+  }
+
+  /* Escala tipográfica editorial fluida */
+  .display-xl { font-size: clamp(3rem, 11.5vw, 11rem); }
+  .display-lg { font-size: clamp(2.5rem, 8vw, 7.5rem); }
+  .display-md { font-size: clamp(2.125rem, 5.6vw, 4.75rem); }
+  .display-sm { font-size: clamp(1.75rem, 3.6vw, 3rem); }
+
+  .lede {
+    font-size: clamp(1.0625rem, 1.35vw, 1.3125rem);
+    line-height: 1.6;
+    max-width: 46ch;
+  }
+
+  /* Grano de película: textura premium, casi imperceptible */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .hairline { border-color: color-mix(in oklab, var(--color-ink) 12%, transparent); }
+  .hairline-light { border-color: color-mix(in oklab, var(--color-bone) 18%, transparent); }
+}
+
+/* Barra de scroll discreta, en marca */
+@supports (scrollbar-color: auto) {
+  html { scrollbar-color: var(--color-stone) transparent; scrollbar-width: thin; }
+}
+
+/* ============================================================================
+   Accesibilidad: respeto total por prefers-reduced-motion.
+   Framer Motion se desactiva por hook; esto cubre CSS y scroll nativo.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Cinta continua del hero (Marquee) — animada en CSS para liberar el hilo principal */
+@keyframes marquee-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.marquee-track {
+  animation-name: marquee-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
+
+/* ============================================================================
+   Ficha de producto desplegable.
+   Se escribe en CSS plano por dos motivos: `grid-rows-[0fr]` no genera regla
+   en Tailwind v4, y la ficha debe estar SIEMPRE visible en dispositivos
+   táctiles, donde no existe el hover que la abriría.
+   ========================================================================== */
+.product-panel {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.product-panel > * {
+  overflow: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .product-panel {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 480ms var(--ease-editorial),
+      opacity 340ms var(--ease-editorial);
+  }
+
+  .group:hover .product-panel,
+  .group:focus-within .product-panel {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-panel {
+    transition: none;
+  }
+}
